@@ -1,0 +1,14 @@
+# Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
+bin
+obj
+*.suo
+*.user
+*.bak
+build
+packages
+tests
+.hgignore
+.hg
+_ReSharper*
+.Calculator.boltdata
+GuAlex.Calculator.Web/App_Data/

@@ -1,0 +1,56 @@
+﻿@model GuAlex.Calculator.Web.Models.CalculatorViewModel
+
+@{
+    ViewBag.Title = "Калькулятор";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Калькулятор</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <div>
+        <fieldset>
+            @Html.EditorFor(x=>x.Expression)
+            @*@Html.EditorForModel()*@
+        </fieldset>
+        <br />
+        <p>
+            <input type="button" value="Вычислить" class="btn btn-primary" id="btnCalculate" />
+        </p>
+
+        <div>
+            <label></label>
+        </div>
+
+        <div class="editor-label">
+            <label for="CalculationResult">Результат вычисления</label>
+        </div>
+        <div class="editor-field">
+            <input class="text-box single-line" name="CalculationResult" type="text" value="" readonly="readonly" id="calcResult" />
+        </div>
+
+    </div>
+}
+
+<p id="rData">
+</p>
+
+@section scripts{
+    <script type="text/jscript">
+        $('#btnCalculate').click(function () {
+            var url = "/Calculator/GetResult";
+            var name = $('#Expression').val();
+            $.get(url, { expression: name }, function (data) {
+                $("#calcResult").val(data.Result);
+                if (data.HasError) {
+                    $("#calcResult").addClass("error");
+                } else {
+                    $("#calcResult").removeClass("error");
+                }
+            });
+        })
+    </script>
+}
