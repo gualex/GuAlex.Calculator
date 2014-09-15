@@ -1,6 +1,6 @@
 ﻿namespace GuAlex.Calculator.Web.Controllers
 {
-    using System;
+    using System.Linq;
     using System.Web.Mvc;
     using Models;
 
@@ -15,15 +15,24 @@
         }
 
         [HttpGet]
-        public JsonResult GetResult(string expression)
+        public JsonResult GetResult(CalculatorViewModel model)
         {
-            var result = ExpressionEvaluator.Evaluate(expression);
+            if (ModelState.IsValid)
+            {
+                var expression = model.Expression;
+                var result = ExpressionEvaluator.Evaluate(expression);
 
-            var msg = result.HasError
-                ? FormatEvaluationErrorMessage(result)
-                : result.Result.ToString();
+                var msg = result.HasError
+                    ? FormatEvaluationErrorMessage(result)
+                    : result.Result.ToString();
 
-            return Json(new { Result = msg, HasError = result.HasError }, JsonRequestBehavior.AllowGet);
+                return Json(new {Result = msg, HasError = result.HasError}, JsonRequestBehavior.AllowGet);
+            }
+
+            string messages = string.Join("; ", ModelState.Values
+                .SelectMany(x => x.Errors)
+                .Select(x => x.ErrorMessage));
+            return Json(new {Result = messages, HasError = true}, JsonRequestBehavior.AllowGet);
         }
 
         [NonAction]
